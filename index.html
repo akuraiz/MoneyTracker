@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#08080a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Wifey Money" />
+  <title>Wifey Money</title>
+
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="icon" href="icon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="aurora-bg" aria-hidden="true">
+    <span class="orb orb-one"></span>
+    <span class="orb orb-two"></span>
+    <span class="orb orb-three"></span>
+  </div>
+
+  <div class="app-shell">
+    <header class="topbar glass">
+      <div>
+        <p class="eyebrow">Local Private Ledger</p>
+        <h1 id="pageTitle">Home</h1>
+      </div>
+
+      <button class="circle-button glass-button" id="themeToggle" type="button" aria-label="Toggle theme">
+        <span id="themeIcon">◐</span>
+      </button>
+    </header>
+
+    <main class="content">
+      <section class="page active" id="page-home" data-title="Home">
+        <section class="balance-hero glass-strong">
+          <div class="hero-top">
+            <span class="status-pill">
+              <span class="pulse"></span>
+              Local only
+            </span>
+            <span id="homeRecordCountSmall">0 records</span>
+          </div>
+
+          <p>Balance Left</p>
+          <h2 id="homeBalance">$0.00</h2>
+          <div class="balance-meta">
+            <span id="balanceNote">Saved on this iPhone/browser</span>
+            <button type="button" class="mini-link" id="copyBalanceBtn">Copy</button>
+          </div>
+        </section>
+
+        <section class="quick-actions">
+          <button class="quick-card out-card" type="button" data-go="add" data-prefill="Out">
+            <span>−</span>
+            <strong>Add Out</strong>
+            <small>Money used</small>
+          </button>
+
+          <button class="quick-card in-card" type="button" data-go="add" data-prefill="In">
+            <span>＋</span>
+            <strong>Add In</strong>
+            <small>Money added</small>
+          </button>
+        </section>
+
+        <section class="stats-grid">
+          <article class="stat-card glass">
+            <p>Total In</p>
+            <strong id="homeTotalIn">$0.00</strong>
+          </article>
+
+          <article class="stat-card glass">
+            <p>Total Out</p>
+            <strong id="homeTotalOut">$0.00</strong>
+          </article>
+
+          <article class="stat-card glass wide">
+            <p>Money Used</p>
+            <div class="progress-track">
+              <span id="usedProgress"></span>
+            </div>
+            <small id="usedProgressText">0% of received money</small>
+          </article>
+        </section>
+
+        <section class="panel glass">
+          <div class="panel-head">
+            <div>
+              <h3>Recent</h3>
+              <p class="hint">Latest money movement</p>
+            </div>
+            <button class="ghost-button" type="button" data-go="history">View all</button>
+          </div>
+          <div class="record-list compact" id="recentList"></div>
+        </section>
+      </section>
+
+      <section class="page" id="page-add" data-title="Add Record">
+        <section class="panel glass">
+          <div class="section-title">
+            <h3>New Transaction</h3>
+            <p class="hint">Positive number only. Type decides plus or minus.</p>
+          </div>
+
+          <form id="transactionForm" class="form">
+            <label>
+              <span>Type</span>
+              <div class="segmented glass-lite">
+                <input type="radio" name="type" id="typeOut" value="Out" checked />
+                <label for="typeOut">Out</label>
+
+                <input type="radio" name="type" id="typeIn" value="In" />
+                <label for="typeIn">In</label>
+              </div>
+            </label>
+
+            <label>
+              <span>Amount</span>
+              <div class="amount-wrap">
+                <span id="amountCurrency">$</span>
+                <input id="amountInput" type="number" inputmode="decimal" min="0" step="0.01" placeholder="8.60" required />
+              </div>
+            </label>
+
+            <div class="amount-chips">
+              <button type="button" data-amount="1">1</button>
+              <button type="button" data-amount="5">5</button>
+              <button type="button" data-amount="10">10</button>
+              <button type="button" data-amount="50">50</button>
+            </div>
+
+            <label>
+              <span>What was it for?</span>
+              <input id="descriptionInput" type="text" placeholder="Food, ABA transfer, coffee..." />
+            </label>
+
+            <label>
+              <span>Date</span>
+              <input id="dateInput" type="date" required />
+            </label>
+
+            <label>
+              <span>Note</span>
+              <textarea id="noteInput" rows="3" placeholder="Optional note"></textarea>
+            </label>
+
+            <button class="primary-button full" type="submit">Save Record</button>
+          </form>
+        </section>
+
+        <section class="panel glass mini-help">
+          <h3>Remember</h3>
+          <p><strong>She gives money = In.</strong><br><strong>She uses money = Out.</strong><br>Never type minus signs.</p>
+        </section>
+      </section>
+
+      <section class="page" id="page-history" data-title="History">
+        <section class="panel glass">
+          <div class="panel-head">
+            <div>
+              <h3>All Records</h3>
+              <p class="hint">Newest first</p>
+            </div>
+            <button class="ghost-button danger-text" type="button" id="undoLastBtn">Undo</button>
+          </div>
+
+          <div class="filter-row">
+            <button class="chip active" type="button" data-filter="All">All</button>
+            <button class="chip" type="button" data-filter="In">In</button>
+            <button class="chip" type="button" data-filter="Out">Out</button>
+          </div>
+
+          <div class="search-wrap">
+            <input id="searchInput" type="search" placeholder="Search records..." />
+          </div>
+
+          <div class="record-list" id="historyList"></div>
+        </section>
+      </section>
+
+      <section class="page" id="page-backup" data-title="Backup">
+        <section class="panel glass">
+          <div class="section-title">
+            <h3>Backup & Export</h3>
+            <p class="hint">Your records stay in this browser. Export backup regularly.</p>
+          </div>
+
+          <div class="backup-card">
+            <span>Last backup</span>
+            <strong id="lastBackupText">Never</strong>
+          </div>
+
+          <div class="button-stack">
+            <button class="primary-button full" type="button" id="exportBackupBtn">Export Backup JSON</button>
+            <button class="secondary-button full" type="button" id="exportCsvBtn">Export CSV</button>
+            <label class="file-button full">
+              Import Backup JSON
+              <input id="importBackupInput" type="file" accept="application/json,.json" />
+            </label>
+          </div>
+        </section>
+
+        <section class="panel glass">
+          <h3>Safety habit</h3>
+          <p class="hint">After adding many records, export backup and save it to iCloud Drive or Google Drive.</p>
+        </section>
+      </section>
+
+      <section class="page" id="page-settings" data-title="Settings">
+        <section class="panel glass">
+          <h3>App Settings</h3>
+
+          <label class="setting-row">
+            <div>
+              <strong>Currency</strong>
+              <p class="hint">Example: $, ៛</p>
+            </div>
+            <input id="currencyInput" type="text" maxlength="4" value="$" />
+          </label>
+
+          <label class="setting-row">
+            <div>
+              <strong>App Name</strong>
+              <p class="hint">Shown inside the app</p>
+            </div>
+            <input id="appNameInput" type="text" value="Wifey Money" />
+          </label>
+
+          <button class="secondary-button full" type="button" id="saveSettingsBtn">Save Settings</button>
+        </section>
+
+        <section class="panel glass danger-panel">
+          <h3>Danger Zone</h3>
+          <p class="hint">Export backup before clearing records.</p>
+          <button class="danger-button full" type="button" id="clearDataBtn">Clear All Records</button>
+        </section>
+      </section>
+    </main>
+
+    <nav class="bottom-nav glass" aria-label="Main navigation">
+      <button class="nav-item active" type="button" data-page="home">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg>
+        </span>
+        <span class="nav-label">Home</span>
+      </button>
+      <button class="nav-item add-nav" type="button" data-page="add">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        </span>
+        <span class="nav-label">Add</span>
+      </button>
+      <button class="nav-item" type="button" data-page="history">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M8 6h12"/><path d="M8 12h12"/><path d="M8 18h12"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>
+        </span>
+        <span class="nav-label">History</span>
+      </button>
+      <button class="nav-item" type="button" data-page="backup">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+        </span>
+        <span class="nav-label">Backup</span>
+      </button>
+      <button class="nav-item" type="button" data-page="settings">
+        <span class="nav-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.04.04a2.1 2.1 0 1 1-2.98 2.98l-.04-.04A1.8 1.8 0 0 0 14.8 19.6a1.8 1.8 0 0 0-1.08 1.65V21.4a2.1 2.1 0 1 1-4.2 0v-.15A1.8 1.8 0 0 0 8.45 19.6a1.8 1.8 0 0 0-1.98.36l-.04.04a2.1 2.1 0 1 1-2.98-2.98l.04-.04A1.8 1.8 0 0 0 3.85 15a1.8 1.8 0 0 0-1.65-1.08H2.05a2.1 2.1 0 1 1 0-4.2h.15a1.8 1.8 0 0 0 1.65-1.08 1.8 1.8 0 0 0-.36-1.98l-.04-.04a2.1 2.1 0 1 1 2.98-2.98l.04.04a1.8 1.8 0 0 0 1.98.36 1.8 1.8 0 0 0 1.08-1.65V2.2a2.1 2.1 0 1 1 4.2 0v.15a1.8 1.8 0 0 0 1.08 1.65 1.8 1.8 0 0 0 1.98-.36l.04-.04a2.1 2.1 0 1 1 2.98 2.98l-.04.04a1.8 1.8 0 0 0-.36 1.98 1.8 1.8 0 0 0 1.65 1.08h.15a2.1 2.1 0 1 1 0 4.2h-.15A1.8 1.8 0 0 0 19.4 15Z"/></svg>
+        </span>
+        <span class="nav-label">Settings</span>
+      </button>
+    </nav>
+
+    <div class="toast glass-strong" id="toast"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
